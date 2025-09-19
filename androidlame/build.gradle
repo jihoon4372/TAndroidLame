@@ -1,13 +1,12 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'maven-publish'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
-
+    compileSdkVersion 35
+    namespace 'com.naman14.androidlame'
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 26
+        minSdkVersion 26
+        targetSdkVersion 35
         versionCode 1
         versionName "1.0"
     }
@@ -24,11 +23,47 @@ android {
             path 'src/main/jni/Android.mk'
         }
     }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()     // 선택: sources.jar 생성
+            // withJavadocJar()  // 선택: javadoc.jar 생성 (Javadoc 구성 시)
+        }
+    }
 }
 
-
-
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:26.1.0'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+}
+
+publishing {
+    publications {
+        create("release", MavenPublication) {
+            // 🔽 이 한 줄만 '지연' (타이밍 문제 해결)
+            afterEvaluate {
+                from components["release"]
+            }
+
+            groupId = 'com.github.jihoon4372'
+            artifactId = 'TAndroidLame'
+            version = '1.2'
+            pom {
+                name = 'TAndroidLame'
+                description = 'A powerful and easy-to-use Android wrapper around LAME MP3 encoder'
+                url = 'https://github.com/jihoon4372/TAndroidLame'
+                licenses { license {
+                    name = 'GNU General Public License v3.0'
+                    url = 'https://www.gnu.org/licenses/gpl-3.0.html'
+                } }
+                developers { developer {
+                    id = 'jihoon4372'; name = 'jihoon4372'; email = 'dlawlgns7845@gmail.com'
+                } }
+                scm {
+                    connection = 'scm:git:github.com/jihoon4372/TAndroidLame.git'
+                    developerConnection = 'scm:git:ssh://github.com/jihoon4372/TAndroidLame.git'
+                    url = 'https://github.com/jihoon4372/TAndroidLame/tree/main'
+                }
+            }
+        }
+    }
 }
