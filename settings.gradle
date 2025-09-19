@@ -16,5 +16,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "TAndroidLame"
-include(":app")
 include(":androidlame")
